@@ -40,33 +40,31 @@ try {
 }
 },
 
-     GetBestLeader: async function () {
-     let bestLeader ;
-     let partners;
-     let maxP ;
-          try {
+async GetBestLeader() {
+  let bestLeader = undefined;
+  let maxP = 0;
+  try {
+    const Users = await this.contract.methods.numberOfUsers().call();
+    for (let id = 1; id <= Users; id++) {
+      const userAddress = await this.contract.methods.IdToAddress(id).call();
+      const Partners = await this.contract.methods.directPartnersCount(userAddress).call();
+      console.log("l'adresse (" + userAddress + ") a " + Partners + " Partenaires");
 
-            const Users = await this.contract.methods.numberOfUsers().call();
-            for (let id = 1 ; id < Users ; id++ ) { 
-            const userAddress = await this.contract.methods.IdToAddress(id).call();
-            const Partners = await this.contract.methods.directPartnersCount(userAddress).call();
-               console.log("l' adresses (" + userAddress +") a "+ Partners +" Partenaires" )
-               
-            if (Partners > maxP) {
-              bestLeader = userAddress;
-              partners = Partners;
-            }
-                 return ( bestLeader , partners)
-            }
-          } catch (error) {
-            
-          }
-     },
+      if (Partners > maxP) {
+        bestLeader = userAddress;
+        maxP = Partners;
+      }
+    }
+    return { bestLeader, maxP }; // Retourner un objet contenant bestLeader et maxP
+  } catch (error) {
+    console.error("Error in GetBestLeader:", error);
+  }
+},
 
 init: async function () {
   await this.connectContract();
   await this.connectSecondContract();
-
+  await this.GetBestLeader();
   const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
   if (accounts.length === 0) {
       console.error("No Ethereum accounts found.");
