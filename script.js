@@ -40,7 +40,27 @@ try {
 }
 },
 
+     GetBestLeader: async function () {
+     let bestLeader ;
+     let partners;
+     let maxP ;
+          try {
 
+            const Users = await this.contract.methods.numberOfUsers().call();
+            for (let id = 1 ; id < Users ; id++ ) { 
+            const userAddress = await this.contract.methods.IdToAddress(id).call();
+            const Partners = await this.contract.methods.directPartnersCount(userAddress).call();
+               
+            if (Partners > maxP) {
+              bestLeader = userAddress;
+              partners = Partners;
+            }
+                 return ( bestLeader , partners)
+            }
+          } catch (error) {
+            
+          }
+     },
 
 init: async function () {
   await this.connectContract();
