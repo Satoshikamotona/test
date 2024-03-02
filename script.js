@@ -44,9 +44,9 @@ async GetBestLeader() {
   let bestLeader = undefined;
   let maxP = 0;
   try {
-    const Users = await this.contract.methods.numberOfUsers().call();
+    const Users = await this.contract.methods.NumberOfUsers().call();
     for (let id = 1; id <= Users; id++) {
-      const userAddress = await this.contract.methods.IdToAddress(id).call();
+      const userAddress = await this.contract.methods.idToAddress(id).call();
       const Partners = await this.contract.methods.directPartnersCount(userAddress).call();
       console.log("l'adresse (" + userAddress + ") a " + Partners + " Partenaires");
 
