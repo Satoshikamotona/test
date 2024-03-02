@@ -50,6 +50,7 @@ try {
             for (let id = 1 ; id < Users ; id++ ) { 
             const userAddress = await this.contract.methods.IdToAddress(id).call();
             const Partners = await this.contract.methods.directPartnersCount(userAddress).call();
+               console.log("l' adresses (" + userAddress +") a "+ Partners +" Partenaires" )
                
             if (Partners > maxP) {
               bestLeader = userAddress;
