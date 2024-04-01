@@ -43,29 +43,33 @@ var galaxyMining = {
   async GetBestLeader() {
     let bestLeader = undefined;
     let maxP = 0;
-    let TotalDiv = 0;
+    let TotalDiv = new web3.utils.BN(0); // Initialiser TotalDiv comme un BigNumber
     
     try {
       const Users = await this.contract.methods.NumberOfUsers().call();
       for (let id = 1; id <= Users; id++) {
         const userAddress = await this.contract.methods.idToAddress(id).call();
         const Partners = await this.contract.methods.directPartnersCount(userAddress).call();
-        const DivInSec = await this.secondContract.methods.totalDivClaimed(userAddress)
-        const DivInF = await this.contract.methods.totalDivClaimed(userAddress)
-        const Tdiv = DivInSec + DivInF
-         TotalDiv += Tdiv
-        console.log("l'adresse (" + userAddress + ") a " + Partners + " Partenaires a gagner " + Tdiv + "Donc ca fais " +TotalDiv);
-        console.log(TotalDiv)
+        
+        // Assurez-vous que totalDivClaimed retourne une valeur que vous pouvez utiliser
+        const DivInSec = new web3.utils.BN(await this.secondContract.methods.totalDivClaimed(userAddress).call());
+        const DivInF = new web3.utils.BN(await this.contract.methods.totalDivClaimed(userAddress).call());
+        
+        const Tdiv = DivInSec.add(DivInF); // Utiliser .add() pour additionner les BigNumbers
+        TotalDiv = TotalDiv.add(Tdiv); // Additionner au total global
+        
+        console.log(`L'adresse (${userAddress}) a ${Partners} partenaires et a gagné ${Tdiv.toString()} donc ça fait ${TotalDiv.toString()}`);
+        
         if (Partners > maxP) {
           bestLeader = userAddress;
           maxP = Partners;
         }
       }
-      return { bestLeader, maxP , TotalDiv }; // Retourner un objet contenant bestLeader et maxP
+      return { bestLeader, maxP, TotalDiv: TotalDiv.toString() }; // Convertir TotalDiv en string pour le retour
     } catch (error) {
       console.error("Error in GetBestLeader:", error);
-    }
-  },
+    },
+    
   
   init: async function () {
     await this.connectContract();
