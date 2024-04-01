@@ -68,7 +68,7 @@ var galaxyMining = {
       return { bestLeader, maxP, TotalDiv: TotalDiv.toString() }; // Convertir TotalDiv en string pour le retour
     } catch (error) {
       console.error("Error in GetBestLeader:", error);
-    },
+    } },
     
   
   init: async function () {
