@@ -43,6 +43,7 @@ var galaxyMining = {
   async GetBestLeader() {
     let bestLeader = undefined;
     let maxP = 0;
+    let id = 0;
     let TotalDiv = new web3.utils.BN(0); // Initialiser TotalDiv comme un BigNumber
     
     try {
@@ -57,8 +58,9 @@ var galaxyMining = {
         
         const Tdiv = DivInSec.add(DivInF); // Utiliser .add() pour additionner les BigNumbers
         TotalDiv = TotalDiv.add(Tdiv); // Additionner au total global
+          id ++;
         
-        console.log(`L'adresse (${userAddress}) a ${Partners} partenaires et a gagné ${Tdiv.toString()} donc ça fait ${TotalDiv.toString()}`);
+        console.log(` id : ${id} : L'adresse (${userAddress}) a ${Partners} partenaires et a gagné ${Tdiv.toString()} donc ça fait ${TotalDiv.toString()}`);
         
         if (Partners > maxP) {
           bestLeader = userAddress;
